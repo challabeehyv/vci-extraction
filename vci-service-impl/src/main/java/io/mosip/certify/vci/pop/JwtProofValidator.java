@@ -41,7 +41,7 @@ public class JwtProofValidator implements ProofValidator {
     private static final String HEADER_TYP = "openid4vci-proof+jwt";
     private static final String DID_JWK_PREFIX = "did:jwk:";
 
-    @Value("#{${mosip.esignet.vci.supported.jwt-proof-alg}}")
+    @Value("#{${mosip.certify.vci.supported.jwt-proof-alg}}")
     private List<String> supportedAlgorithms;
 
     @Value("${mosip.esignet.vci.identifier}")
