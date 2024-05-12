@@ -7,16 +7,16 @@ package io.mosip.certify.core.exception;
 
 import io.mosip.certify.core.constants.ErrorConstants;
 
-public class EsignetException extends RuntimeException {
+public class CertifyException extends RuntimeException {
 
     private String errorCode;
 
-    public EsignetException() {
+    public CertifyException() {
         super(ErrorConstants.UNKNOWN_ERROR);
         this.errorCode = ErrorConstants.UNKNOWN_ERROR;
     }
 
-    public EsignetException(String errorCode) {
+    public CertifyException(String errorCode) {
         super(errorCode);
         this.errorCode = errorCode;
     }

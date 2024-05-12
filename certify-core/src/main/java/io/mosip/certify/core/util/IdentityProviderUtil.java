@@ -8,7 +8,7 @@ package io.mosip.certify.core.util;
 import com.nimbusds.jose.util.ByteUtils;
 import io.mosip.certify.core.constants.Constants;
 import io.mosip.certify.core.constants.ErrorConstants;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 import io.mosip.certify.core.exception.InvalidRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
@@ -92,36 +92,36 @@ public class IdentityProviderUtil {
                 .toArray(String[]::new);
     }
 
-    public static String generateHexEncodedHash(String algorithm, String value) throws EsignetException {
+    public static String generateHexEncodedHash(String algorithm, String value) throws CertifyException {
         try {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
             byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
             return Hex.encodeHexString(hash);
         } catch (NoSuchAlgorithmException ex) {
             logger.error("Invalid algorithm : {}", algorithm, ex);
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
-    public static String generateB64EncodedHash(String algorithm, String value) throws EsignetException {
+    public static String generateB64EncodedHash(String algorithm, String value) throws CertifyException {
         try {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
             byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
             return urlSafeEncoder.encodeToString(hash);
         } catch (NoSuchAlgorithmException ex) {
             logger.error("Invalid algorithm : {}", algorithm, ex);
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
-    public static String generateB64EncodedHash(String algorithm, byte[] bytes) throws EsignetException {
+    public static String generateB64EncodedHash(String algorithm, byte[] bytes) throws CertifyException {
         try {
             MessageDigest digest = MessageDigest.getInstance(algorithm);
             byte[] hash = digest.digest(bytes);
             return urlSafeEncoder.encodeToString(hash);
         } catch (NoSuchAlgorithmException ex) {
             logger.error("Invalid algorithm : {}", algorithm, ex);
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
@@ -142,9 +142,9 @@ public class IdentityProviderUtil {
      *  encode them. The at_hash value is a case-sensitive string.
      * @param accessToken
      * @return
-     * @throws EsignetException
+     * @throws CertifyException
      */
-    public static String generateOIDCAtHash(String accessToken) throws EsignetException {
+    public static String generateOIDCAtHash(String accessToken) throws CertifyException {
         try {
             MessageDigest digest = MessageDigest.getInstance(ALGO_SHA_256);
             byte[] hash = digest.digest(accessToken.getBytes(StandardCharsets.UTF_8));
@@ -153,7 +153,7 @@ public class IdentityProviderUtil {
             return urlSafeEncoder.encodeToString(leftMost128Bits);
         } catch (NoSuchAlgorithmException ex) {
             log.error("Access token hashing failed with alg:{}", ALGO_SHA_256, ex);
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
@@ -161,7 +161,7 @@ public class IdentityProviderUtil {
         return ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
     }
 
-    public static void validateRedirectURI(List<String> registeredRedirectUris, String requestedRedirectUri) throws EsignetException {
+    public static void validateRedirectURI(List<String> registeredRedirectUris, String requestedRedirectUri) throws CertifyException {
         if(registeredRedirectUris.stream().anyMatch(uri -> matchUri(uri, requestedRedirectUri)))
             return;
 
@@ -169,7 +169,7 @@ public class IdentityProviderUtil {
         throw new InvalidRequestException(ErrorConstants.INVALID_REDIRECT_URI);
     }
 
-    public static String createTransactionId(String nonce) throws EsignetException {
+    public static String createTransactionId(String nonce) throws CertifyException {
         try {
             MessageDigest digest = MessageDigest.getInstance(ALGO_SHA3_256);
             digest.update(UUID.randomUUID().toString()
@@ -179,7 +179,7 @@ public class IdentityProviderUtil {
             return urlSafeEncoder.encodeToString(digest.digest());
         } catch (NoSuchAlgorithmException ex) {
             log.error("create transaction id failed with alg SHA3-256", ex);
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
@@ -204,13 +204,13 @@ public class IdentityProviderUtil {
 		return randomBytes;
 	}
 
-	public static String getJWKString(Map<String, Object> jwk) throws EsignetException {
+	public static String getJWKString(Map<String, Object> jwk) throws CertifyException {
 		try {
 			RsaJsonWebKey jsonWebKey = new RsaJsonWebKey(jwk);
 			return jsonWebKey.toJson();
 		} catch (JoseException e) {
 			log.error(ErrorConstants.INVALID_PUBLIC_KEY, e);
-			throw new EsignetException(ErrorConstants.INVALID_PUBLIC_KEY);
+			throw new CertifyException(ErrorConstants.INVALID_PUBLIC_KEY);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class IdentityProviderUtil {
             md.update(cert.getEncoded());
             return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
         } catch (NoSuchAlgorithmException | CertificateEncodingException e) {
-            throw new EsignetException(ErrorConstants.INVALID_ALGORITHM);
+            throw new CertifyException(ErrorConstants.INVALID_ALGORITHM);
         }
     }
 
@@ -230,13 +230,13 @@ public class IdentityProviderUtil {
             PemReader pemReader = new PemReader(strReader);
             PemObject pemObject = pemReader.readPemObject();
             if (Objects.isNull(pemObject)) {
-                throw new EsignetException(ErrorConstants.INVALID_CERTIFICATE);
+                throw new CertifyException(ErrorConstants.INVALID_CERTIFICATE);
             }
             byte[] certBytes = pemObject.getContent();
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             return certFactory.generateCertificate(new ByteArrayInputStream(certBytes));
         } catch (IOException | CertificateException e) {
-            throw new EsignetException(ErrorConstants.INVALID_CERTIFICATE);
+            throw new CertifyException(ErrorConstants.INVALID_CERTIFICATE);
         }
     }
 
@@ -247,6 +247,6 @@ public class IdentityProviderUtil {
             X509Certificate certificate = (X509Certificate) certObj;
             return X509Util.x5tS256(certificate);
         }
-        throw new EsignetException(ErrorConstants.INVALID_CERTIFICATE);
+        throw new CertifyException(ErrorConstants.INVALID_CERTIFICATE);
     }
 }

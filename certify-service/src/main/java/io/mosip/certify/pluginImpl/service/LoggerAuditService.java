@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.validation.constraints.NotNull;
 
-@ConditionalOnProperty(value = "mosip.esignet.integration.audit-plugin", havingValue = "LoggerAuditService")
+@ConditionalOnProperty(value = "mosip.certify.integration.audit-plugin", havingValue = "LoggerAuditService")
 @Component
 @Slf4j
 public class LoggerAuditService implements AuditPlugin {

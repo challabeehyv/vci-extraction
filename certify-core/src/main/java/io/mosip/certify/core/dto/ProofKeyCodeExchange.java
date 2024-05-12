@@ -2,7 +2,7 @@ package io.mosip.certify.core.dto;
 
 
 import io.mosip.certify.core.constants.ErrorConstants;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class ProofKeyCodeExchange implements Serializable {
             return null;
 
         if(StringUtils.isEmpty(codeChallenge))
-            throw new EsignetException(ErrorConstants.INVALID_PKCE_CHALLENGE);
+            throw new CertifyException(ErrorConstants.INVALID_PKCE_CHALLENGE);
 
         switch (codeChallengeMethod) {
             case S256 :
@@ -40,7 +40,7 @@ public class ProofKeyCodeExchange implements Serializable {
                 proofKeyCodeExchange.setCodeChallengeMethod("S256");
                 return proofKeyCodeExchange;
             default:
-                throw new EsignetException(ErrorConstants.UNSUPPORTED_PKCE_CHALLENGE_METHOD);
+                throw new CertifyException(ErrorConstants.UNSUPPORTED_PKCE_CHALLENGE_METHOD);
         }
     }
 }

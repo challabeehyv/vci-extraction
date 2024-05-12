@@ -47,12 +47,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 
 
-@ConditionalOnProperty(value = "mosip.esignet.integration.vci-plugin", havingValue = "SunbirdRCVCIssuancePlugin")
+@ConditionalOnProperty(value = "mosip.certify.integration.vci-plugin", havingValue = "SunbirdRCVCIssuancePlugin")
 @Component
 @Slf4j
 public class SunbirdRCVCIssuancePlugin implements VCIssuancePlugin {
 
-    private static final String CREDENTIAL_TYPE_PROPERTY_PREFIX ="mosip.esignet.vciplugin.sunbird-rc.credential-type";
+    private static final String CREDENTIAL_TYPE_PROPERTY_PREFIX ="mosip.certify.vciplugin.sunbird-rc.credential-type";
 
     private static final String LINKED_DATA_PROOF_VC_FORMAT ="ldp_vc";
 
@@ -83,13 +83,13 @@ public class SunbirdRCVCIssuancePlugin implements VCIssuancePlugin {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${mosip.esignet.vciplugin.sunbird-rc.issue-credential-url}")
+    @Value("${mosip.certify.vciplugin.sunbird-rc.issue-credential-url}")
     String issueCredentialUrl;
 
-    @Value("${mosip.esignet.vciplugin.sunbird-rc.enable-psut-based-registry-search:false}")
+    @Value("${mosip.certify.vciplugin.sunbird-rc.enable-psut-based-registry-search:false}")
     private boolean enablePSUTBasedRegistrySearch;
 
-    @Value("#{'${mosip.esignet.vciplugin.sunbird-rc.supported-credential-types}'.split(',')}")
+    @Value("#{'${mosip.certify.vciplugin.sunbird-rc.supported-credential-types}'.split(',')}")
     List<String> supportedCredentialTypes;
 
     private final Map<String, Template> credentialTypeTemplates = new HashMap<>();

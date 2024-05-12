@@ -25,10 +25,10 @@ import org.springframework.web.client.RestTemplate;
 public class AppConfig {
 
 
-    @Value("${mosip.esignet.default.httpclient.connections.max.per.host:20}")
+    @Value("${mosip.certify.default.httpclient.connections.max.per.host:20}")
     private int defaultMaxConnectionPerRoute;
 
-    @Value("${mosip.esignet.default.httpclient.connections.max:100}")
+    @Value("${mosip.certify.default.httpclient.connections.max:100}")
     private int defaultTotalMaxConnection;
 
 

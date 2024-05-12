@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 
-@ConditionalOnProperty(value = "mosip.esignet.integration.audit-plugin", havingValue = "TestAuditPlugin")
+@ConditionalOnProperty(value = "mosip.certify.integration.audit-plugin", havingValue = "TestAuditPlugin")
 @Component
 @Slf4j
 public class TestAuditPluginImpl implements AuditPlugin {

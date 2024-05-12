@@ -5,7 +5,7 @@
  */
 package io.mosip.certify.core.exception;
 
-public class InvalidRequestException extends EsignetException {
+public class InvalidRequestException extends CertifyException {
 
     private String errorCode;
 

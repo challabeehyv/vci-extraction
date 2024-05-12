@@ -6,9 +6,9 @@
 package io.mosip.certify.vci.exception;
 
 import io.mosip.certify.core.constants.ErrorConstants;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 
-public class InvalidNonceException extends EsignetException {
+public class InvalidNonceException extends CertifyException {
 
     private String clientNonce;
 

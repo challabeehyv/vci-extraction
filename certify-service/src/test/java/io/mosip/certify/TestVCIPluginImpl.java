@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@ConditionalOnProperty(value = "mosip.esignet.integration.vci-plugin", havingValue = "TestVCIPluginImpl")
+@ConditionalOnProperty(value = "mosip.certify.integration.vci-plugin", havingValue = "TestVCIPluginImpl")
 @Component
 @Slf4j
 public class TestVCIPluginImpl implements VCIssuancePlugin {

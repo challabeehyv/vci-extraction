@@ -8,7 +8,7 @@ package io.mosip.certify.advice;
 import io.mosip.certify.core.dto.Error;
 import io.mosip.certify.core.dto.ResponseWrapper;
 import io.mosip.certify.core.dto.vci.VCError;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 import io.mosip.certify.core.exception.InvalidRequestException;
 import io.mosip.certify.core.exception.NotAuthenticatedException;
 import io.mosip.certify.core.util.IdentityProviderUtil;
@@ -134,8 +134,8 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler imple
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(INVALID_REQUEST, ex.getMessage()),
                     HttpStatus.OK);
         }
-        if(ex instanceof EsignetException) {
-            String errorCode = ((EsignetException) ex).getErrorCode();
+        if(ex instanceof CertifyException) {
+            String errorCode = ((CertifyException) ex).getErrorCode();
             return new ResponseEntity<ResponseWrapper>(getResponseWrapper(errorCode, getMessage(errorCode)), HttpStatus.OK);
         }
         if(ex instanceof AuthenticationCredentialsNotFoundException) {
@@ -161,11 +161,11 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler imple
             return new ResponseEntity<VCError>(getVCErrorDto(message, message), HttpStatus.BAD_REQUEST);
         }
         if(ex instanceof NotAuthenticatedException) {
-            String errorCode = ((EsignetException) ex).getErrorCode();
+            String errorCode = ((CertifyException) ex).getErrorCode();
             return new ResponseEntity<VCError>(getVCErrorDto(errorCode, getMessage(errorCode)), HttpStatus.UNAUTHORIZED);
         }
-        if(ex instanceof InvalidRequestException | ex instanceof EsignetException) {
-            String errorCode = ((EsignetException) ex).getErrorCode();
+        if(ex instanceof InvalidRequestException | ex instanceof CertifyException) {
+            String errorCode = ((CertifyException) ex).getErrorCode();
             return new ResponseEntity<VCError>(getVCErrorDto(errorCode, getMessage(errorCode)), HttpStatus.BAD_REQUEST);
         }
         log.error("Unhandled exception encountered in handler advice", ex);

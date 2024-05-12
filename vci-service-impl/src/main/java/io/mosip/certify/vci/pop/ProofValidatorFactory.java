@@ -6,7 +6,7 @@
 package io.mosip.certify.vci.pop;
 
 import io.mosip.certify.core.constants.ErrorConstants;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class ProofValidatorFactory {
         if(result.isPresent())
             return result.get();
 
-        throw new EsignetException(ErrorConstants.UNSUPPORTED_PROOF_TYPE);
+        throw new CertifyException(ErrorConstants.UNSUPPORTED_PROOF_TYPE);
     }
 
 }

@@ -21,7 +21,7 @@ import io.mosip.certify.core.dto.vci.ParsedAccessToken;
 import io.mosip.certify.core.dto.vci.VCIssuanceTransaction;
 import io.mosip.certify.core.constants.Constants;
 import io.mosip.certify.core.constants.ErrorConstants;
-import io.mosip.certify.core.exception.EsignetException;
+import io.mosip.certify.core.exception.CertifyException;
 import io.mosip.certify.core.exception.InvalidRequestException;
 import io.mosip.certify.core.exception.NotAuthenticatedException;
 import io.mosip.certify.core.spi.VCIssuanceService;
@@ -53,10 +53,10 @@ public class VCIssuanceServiceImpl implements VCIssuanceService {
 
     private static final String TYPE_VERIFIABLE_CREDENTIAL = "VerifiableCredential";
 
-    @Value("#{${mosip.esignet.vci.key-values}}")
+    @Value("#{${mosip.certify.vci.key-values}}")
     private LinkedHashMap<String, LinkedHashMap<String, Object>> issuerMetadata;
 
-    @Value("${mosip.esignet.cnonce-expire-seconds:300}")
+    @Value("${mosip.certify.cnonce-expire-seconds:300}")
     private int cNonceExpireSeconds;
 
     @Autowired
@@ -97,13 +97,13 @@ public class VCIssuanceServiceImpl implements VCIssuanceService {
 
         if(credentialMetadata == null) {
             log.error("No credential mapping found for the provided scope {}", scopeClaim);
-            throw new EsignetException(ErrorConstants.INVALID_SCOPE);
+            throw new CertifyException(ErrorConstants.INVALID_SCOPE);
         }
 
         ProofValidator proofValidator = proofValidatorFactory.getProofValidator(credentialRequest.getProof().getProof_type());
         if(!proofValidator.validate((String)parsedAccessToken.getClaims().get(CLIENT_ID), getValidClientNonce(),
                 credentialRequest.getProof())) {
-            throw new EsignetException(ErrorConstants.INVALID_PROOF);
+            throw new CertifyException(ErrorConstants.INVALID_PROOF);
         }
 
         //Get VC from configured plugin implementation
@@ -147,10 +147,10 @@ public class VCIssuanceServiceImpl implements VCIssuanceService {
                             parsedAccessToken.getClaims());
                     break;
                 default:
-                    throw new EsignetException(ErrorConstants.UNSUPPORTED_VC_FORMAT);
+                    throw new CertifyException(ErrorConstants.UNSUPPORTED_VC_FORMAT);
             }
         } catch (VCIExchangeException e) {
-            throw new EsignetException(e.getErrorCode());
+            throw new CertifyException(e.getErrorCode());
         }
 
         if(vcResult != null && vcResult.getCredential() != null)
@@ -159,7 +159,7 @@ public class VCIssuanceServiceImpl implements VCIssuanceService {
         log.error("Failed to generate VC : {}", vcResult);
         auditWrapper.logAudit(Action.VC_ISSUANCE, ActionStatus.ERROR,
                 AuditHelper.buildAuditDto(parsedAccessToken.getAccessTokenHash(), "accessTokenHash", null), null);
-        throw new EsignetException(ErrorConstants.VC_ISSUANCE_FAILED);
+        throw new CertifyException(ErrorConstants.VC_ISSUANCE_FAILED);
     }
 
     private CredentialResponse<?> getCredentialResponse(String format, VCResult<?> vcResult) {
@@ -177,7 +177,7 @@ public class VCIssuanceServiceImpl implements VCIssuanceService {
                 jsonResponse.setFormat(vcResult.getFormat());
                 return jsonResponse;
         }
-        throw new EsignetException(ErrorConstants.UNSUPPORTED_VC_FORMAT);
+        throw new CertifyException(ErrorConstants.UNSUPPORTED_VC_FORMAT);
     }
 
     private Optional<CredentialMetadata>  getScopeCredentialMapping(String scope) {
